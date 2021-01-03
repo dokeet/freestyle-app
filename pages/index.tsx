@@ -1,4 +1,4 @@
-import Word from "components/Word"
+import Word from "../components/Word"
 import { useState } from "react"
 import * as YoutubePlayer from 'react-player/youtube'
 import * as SoundCloudPlayer from 'react-player/soundcloud'
