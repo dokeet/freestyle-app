@@ -11,3 +11,6 @@
 /* Stop purging. */
 
 /* Your own custom utilities */
+.grid-area {
+  grid-area: 1/1;
+}
