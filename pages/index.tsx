@@ -10,17 +10,21 @@ export default function IndexPage() {
   const [progress, setProgress] = useState(0)
   const [maxProgress, setMaxProgress] = useState(0)
   const [timeString, setTimeString] = useState("")
+  const [isSeeking, setIsSeeking] = useState(false)
   const playerRef = useRef(null)
   const handlePlay = () => {
     setIsPlaying(true)
   }
   const handleOnReady = (e) => {
+    console.log('player ready', e.getDuration())
     setMaxProgress(e.getDuration())
   }
   const handlePause = () => {
     setIsPlaying(false)
   }
   const handleOnChange = (e) => {
+    console.log('called')
+    setTimeString("00:00:00")
     if (e.target.value.includes('youtube')) {
       setShowsoundcloud(false)
     }
@@ -33,14 +37,12 @@ export default function IndexPage() {
     setVideoUrl(e.target.value)
   }
   const handleProgress = (e) => {
-    setProgress(e.playedSeconds)
-    console.log(e)
+    if(!isSeeking) {
+      setProgress(e.playedSeconds)
+    }
   }
   const handleSeeking = (e) => {
-    if (playerRef.current) {
-      playerRef.current.seekTo(e.target.value)
-      setProgress(e.target.value)
-    }
+    setProgress(e.target.value)
   }
   useEffect(() => {
     const date = new Date(0);
@@ -48,7 +50,21 @@ export default function IndexPage() {
     const timeString = date.toISOString().substr(11, 8);
     setTimeString(timeString)
   }, [progress])
-
+  const handleSeekingDown = () => {
+    setIsSeeking(true)
+  }
+  const handleSeekingUp = () => {
+    setIsSeeking(false)
+    playerRef.current.seekTo(progress)
+  }
+  useEffect(() => {
+    if(playerRef.current){
+      setMaxProgress(playerRef.current.getDuration())
+    }
+  }, [videoUrl, progress])
+  useEffect(() => {
+    console.log(timeString)
+  }, [timeString])
   return (
     <div>
       <div className="py-20">
@@ -67,9 +83,9 @@ export default function IndexPage() {
               className="w-60"
               type='range' min={0} max={maxProgress} step='any'
               value={progress}
-              // onMouseDown={this.handleSeekMouseDown}
+              onMouseDown={handleSeekingDown}
               onChange={handleSeeking}
-            // onMouseUp={this.handleSeekMouseUp}
+              onMouseUp={handleSeekingUp}
             />
             <p className="text-base">{timeString}</p>
           </div>
@@ -106,7 +122,7 @@ export default function IndexPage() {
   )
 }
 
-const PlayIcon = () => <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path><path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path></svg>
+const PlayIcon = () => <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path></svg>
 
 const StopIcon = () => <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+<path strokeLinecap="round" strokeLinejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path strokeLinecap="round" strokeLinejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
