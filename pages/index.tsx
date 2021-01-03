@@ -10,6 +10,7 @@ export default function IndexPage() {
 
   const handlePlay = (e) => {
     console.log('is playing')
+    console.log(e)
     setIsPlaying(true)
   }
   const handlePause = () => {
@@ -39,17 +40,22 @@ export default function IndexPage() {
           <div>
             <p className="text-lg">You can add youtube or soundclound link</p>
           </div>
+          <button className="text-5xl" onClick={() => setIsPlaying(!isPlaying)}>{isPlaying ? <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path><path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path></svg> : <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>}</button>
           <div className="mx-auto">
             {showSoundcloud ? <SoundCloudPlayer url={videoUrl}
               onPlay={handlePlay}
               onPause={handlePause}
               className="mx-auto"
-            /> :
+              /> :
+              <div className="bg-white relative">
               <YoutubePlayer url={videoUrl}
                 onPlay={handlePlay}
                 onPause={handlePause}
-                className="mx-auto"
+                className="mx-auto z-0 absolute"
+                playing={isPlaying}
               />
+              <div className="fixed w-full h-full bg-white"></div>
+             </div> 
             }
           </div>
         </h1>
