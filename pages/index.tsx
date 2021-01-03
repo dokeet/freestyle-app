@@ -11,19 +11,18 @@ export default function IndexPage() {
   const [maxProgress, setMaxProgress] = useState(0)
   const [timeString, setTimeString] = useState("")
   const [isSeeking, setIsSeeking] = useState(false)
+  const [seconds, setSeconds] = useState(10)
   const playerRef = useRef(null)
   const handlePlay = () => {
     setIsPlaying(true)
   }
   const handleOnReady = (e) => {
-    console.log('player ready', e.getDuration())
     setMaxProgress(e.getDuration())
   }
   const handlePause = () => {
     setIsPlaying(false)
   }
   const handleOnChange = (e) => {
-    console.log('called')
     setTimeString("00:00:00")
     if (e.target.value.includes('youtube')) {
       setShowsoundcloud(false)
@@ -37,7 +36,7 @@ export default function IndexPage() {
     setVideoUrl(e.target.value)
   }
   const handleProgress = (e) => {
-    if(!isSeeking) {
+    if (!isSeeking) {
       setProgress(e.playedSeconds)
     }
   }
@@ -58,18 +57,20 @@ export default function IndexPage() {
     playerRef.current.seekTo(progress)
   }
   useEffect(() => {
-    if(playerRef.current){
-      setMaxProgress(playerRef.current.getDuration())
-    }
+    setMaxProgress(playerRef?.current?.getDuration())
   }, [videoUrl, progress])
-  useEffect(() => {
-    console.log(timeString)
-  }, [timeString])
+
   return (
     <div>
-      <div className="py-20">
+      <div className="py-20 text-center">
         <h1 className="text-5xl text-center text-accent-1">
-          <Word isPlaying={isPlaying} />
+          <Word isPlaying={isPlaying} seconds={seconds} />
+        </h1>
+          <h3 className="text-2xl">
+            {seconds === 10 && 'Easy mode'}
+            {seconds === 5 && 'Hard mode'}
+            {seconds === 3 && 'Extreme mode'}
+          </h3>
           <div className="max-w-xs mx-auto flex items-center">
             <label className="text-base" htmlFor="link">link: </label>
             <input name="link" id="link" className="block w-full mx-auto text-xs" type="text" onChange={handleOnChange} defaultValue={videoUrl} />
@@ -78,7 +79,9 @@ export default function IndexPage() {
             <p className="text-lg">You can add youtube or soundclound link</p>
           </div>
           <div className="flex items-center justify-center">
-            <button className="text-5xl" onClick={() => setIsPlaying(!isPlaying)}>{isPlaying ? <PlayIcon />  : <StopIcon />}</button>
+            <button className="text-5xl" onClick={() => setIsPlaying(!isPlaying)}>
+              {isPlaying ? <PlayIcon /> : <StopIcon />}
+            </button>
             <input
               className="w-60"
               type='range' min={0} max={maxProgress} step='any'
@@ -89,7 +92,7 @@ export default function IndexPage() {
             />
             <p className="text-base">{timeString}</p>
           </div>
-          <div className="grid place-items-center h-24">
+          <div className="grid place-items-center">
             {showSoundcloud ? <SoundCloudPlayer url={videoUrl}
               onPlay={handlePlay}
               onPause={handlePause}
@@ -116,7 +119,21 @@ export default function IndexPage() {
               />
             }
           </div>
-        </h1>
+          <div className="space-y-4">
+            <div className="flex items-center justify-center">
+              <h2 className="text-2xl">Set Easy mode: (10s) </h2>
+              <button className="bg-gray-400 p-2 text-lg text-white" onClick={() => setSeconds(10)}>select</button>
+            </div>
+            <div className="flex items-center justify-center">
+              <h2 className="text-2xl">Set Hard mode:  (5s)</h2>
+              <button className="bg-gray-400 p-2 text-lg text-white" onClick={() => setSeconds(5)}>select</button>
+            </div>
+            <div className="flex items-center justify-center">
+              <h2 className="text-2xl">Set Extreme mode:  (3s)</h2>
+              <button className="bg-gray-400 p-2 text-lg text-white" onClick={() => setSeconds(3)}>select</button>
+            </div>
+          </div>
+        
       </div>
     </div>
   )
@@ -125,4 +142,4 @@ export default function IndexPage() {
 const PlayIcon = () => <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path></svg>
 
 const StopIcon = () => <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-<path strokeLinecap="round" strokeLinejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path strokeLinecap="round" strokeLinejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>

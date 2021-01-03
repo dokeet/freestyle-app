@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import words from "utils/word-generator";
-const Word = ({ isPlaying }) => {
+const Word = ({ isPlaying, seconds }) => {
   const [word, setWord] = useState(words)
 
   useEffect(() => {
     if (!isPlaying) return;
     const timer = setTimeout(() => {
       setWord(words)
-    }, 5000);
+    }, seconds * 1000);
 
     return () => {
       clearTimeout(timer)
